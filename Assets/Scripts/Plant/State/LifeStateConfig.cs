@@ -1,23 +1,28 @@
-﻿using Plant.Action;
+﻿using System;
+using Plant.GrowthActions;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Plant.State
 {
+    [Serializable]
     public struct LifeStateConfig
     {
-        public readonly GameObject PlantPrefab;
-        public readonly Vector3 ActionUIOffset;
-        public readonly int ScorePoints;
-        public readonly LifeState NextLifeState;
-        public readonly GrowthAction[] GrowthActions;
+        public GameObject plantPrefab;
+        public Vector3 actionUIOffset;
+        public int scorePoints;
+        public LifeState nextLifeState;
+        public GrowthAction[] growthActions;
+        public bool hasNextLifeState;
 
-        public LifeStateConfig(GameObject plantPrefab, Vector3 actionUIOffset, int scorePoints, LifeState nextLifeState, GrowthAction[] growthActions)
+        public LifeStateConfig(GameObject plantPrefab, Vector3 actionUIOffset, int scorePoints, LifeState nextLifeState, GrowthAction[] growthActions, bool hasNextLifeState)
         {
-            PlantPrefab = plantPrefab;
-            ActionUIOffset = actionUIOffset;
-            ScorePoints = scorePoints;
-            NextLifeState = nextLifeState;
-            GrowthActions = growthActions;
+            this.plantPrefab = plantPrefab;
+            this.actionUIOffset = actionUIOffset;
+            this.scorePoints = scorePoints;
+            this.nextLifeState = nextLifeState;
+            this.growthActions = growthActions;
+            this.hasNextLifeState = hasNextLifeState;
         }
     }
 }

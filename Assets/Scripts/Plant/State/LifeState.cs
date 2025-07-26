@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace Plant.State
+﻿namespace Plant.State
 {
     public enum LifeState
     {

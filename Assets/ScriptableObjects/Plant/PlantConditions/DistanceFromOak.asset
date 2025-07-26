@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f721c46e50d545fcb637c5496914fd3a, type: 3}
+  m_Name: DistanceFromOak
+  m_EditorClassIdentifier: 
+  <checkDistance>k__BackingField: 50
+  <shouldBeNear>k__BackingField: 0
+  <targetPlantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}

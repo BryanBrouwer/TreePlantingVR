@@ -8,10 +8,11 @@ namespace Plant.Condition
     {
         [field: SerializeField] public float checkDistance { get; private set; }
         [field: SerializeField] public bool shouldBeNear { get; private set; }
+        [field: SerializeField] public PlantType targetPlantType { get; private set; }
 
         public override bool CheckCondition()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
     }
 }

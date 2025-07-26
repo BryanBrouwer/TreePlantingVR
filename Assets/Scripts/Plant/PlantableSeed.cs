@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Plant.Condition;
+using Plant.State;
 using UnityEngine;
 
 namespace Plant
@@ -14,7 +15,7 @@ namespace Plant
         public bool CheckPlantable()
         {
             PlantCondition[] plantConditions = seedData.conditions;
-            //Since we only need to loop over one function, we can use the All() method from .Net
+            //Since we only need to loop over one function, we can use the All() enumerator from .Net
             return plantConditions.All(condition => condition.CheckCondition());
         }
         
@@ -22,16 +23,30 @@ namespace Plant
         {
             if (CheckPlantable())
             {
-                //Get the hit point between the seed and ground colliders, then instantiate the plant prefab.
-                
                 Plant(transform);
             }
         }
 
         private void Plant(Transform plantTransform)
         {
-            Instantiate(plantPrefab, plantTransform.position, plantTransform.rotation);
+            var newPlant = Instantiate(plantPrefab, plantTransform.position, Quaternion.identity);
+            PlantInstance plantInstance = newPlant.GetComponent<PlantInstance>();
+            if (!plantInstance)
+            {
+                plantInstance = newPlant.AddComponent<PlantInstance>();
+            }
+            plantInstance.seedData = seedData;
+            plantInstance.SetupState(LifeState.Seed);
+            
             Destroy(gameObject);
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("PlantableSurface"))
+            {
+                AttemptPlant();
+            }
         }
     }
 }
