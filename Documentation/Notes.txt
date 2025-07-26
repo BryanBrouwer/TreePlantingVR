@@ -1,0 +1,84 @@
+Minimum requirements:
+Support for: VR -> Quest 2 / 3 standalone
+
+Seeds:
+- Atleast 2 types (will make atleast 3 for ensuring easy support of adding more)
+- Seeds should have conditions for planting, like being near other seeds or environmental conditions
+- While growing players should perform an action to progress to next stage.
+	- If said action is not done in time, then the plant will die.
+- There should be 3 stages, seed, sapling, tree.
+
+Game:
+- Should have a loop / ending, not unlimited. This through story, area, or time.
+- There should be a score component, with the goal of reaching highest score possible.
+
+Notes:
+- No grid needed, so will likely go with free placement
+- Dont focus on visuals, but it is a plus.
+- Focus on player onboarding (maybe a tutorial, or using spatial UI elements to explain all interactions, similar to what I did for Shell)
+- Write out decision making process, and explain specific coding choices with comments (Will probably write out the bigger decisions in an attached document)
+- Point out the source of assets in a readme.
+
+Initial concept / plan:
+
+- Focus on functionality first, afterwards will spend remaining time on polish and "game design"
+- Bare functionality plan:
+
+For seeds likely will use scriptable objects for easy setting and data management.
+Initial idea for requirements are:
+
+Conditions and actions:
+Using strategy design pattern to add modular actions and conditions for the progression, think of "Distance from X type" condition
+This could either be a singular scriptable object type for distance, for both being near and far away similar to my nodes for unreal engine state tree.
+However since conditional UI is not a pre-existing feature in unity, might be better for speed to stick with 2 seperate Scriptable objects.
+
+Condition:
+- Scriptable object
+- Function that returns the result of the condition
+
+
+For actions it can work similar:
+- Scriptable object to manage rules and functionality
+- Function that sets up any required world state for the action to be completed
+- Add any needed asset references to the scriptable objects.
+Design wise:
+I want to use a spatial UI element above / next to (depending on growth stage) the tree, which indicates an icon of the desired interaction.
+The background of the UI element would switch between 3 stages: White, Orange, Red depending on how much time is remaining before death.
+Current ideas for interactions are:
+- Watering
+- Removing weeds
+- Cutting redundant branches (Will probably skip this, since 2 are already enough, this could be future content for full grown tree maintenance)
+For the action deadline loop:
+- Look into using a coroutine and yielding it till the next UI update checkpoint, 
+	this so it doesnt run every frame, or look into object reduced tick rate.
+- Stop the coroutine upon action completion
+- If not stopped before final stage, transition plant to next stage:
+
+Growth stages:
+- Enum
+- Seed, Sapling, Tree, Dead
+
+Seed types:
+- Scriptable object
+Dictionary for each enum element of growth stage:
+- Actions to grow
+- Visual asset
+- Next stage
+Planting conditions:
+- Array of the Condition scriptable object
+Additional Info:
+(For dynamic UI like tutorial or onboarding / shop etc)
+- Icon
+- Description
+
+Planting:
+When holding the seeds close enough to the ground, instantiate a transparent preview mesh, colored green or red depending on plantable condition.
+- Later polish, add a context UI displaying why its not plantable, otherwise rely on a simple board the contains a written explanation of each seed type.
+
+Score:
+- Will be awarded on each "state" transition with increasing amounts
+- A plant dying will reduce some score as a consequence
+- Why so often? Providing more often in smaller amounts will indicate to players they are performing correctly.
+
+The tools to complete the action could utilize an interface to indicate they are tools, and for checking what kind of action it solves.
+Also for this use the tag system for collision layers
