@@ -17,7 +17,6 @@ public class SessionDisplay : MonoBehaviour
         var sessionManager = SessionManager.Instance;
         while (sessionManager.isSessionActive)
         {
-            Debug.Log("Session time remaining: " + sessionManager.currentSessionTime);
             var timeRemaining = sessionManager.sessionTimeLimit - sessionManager.currentSessionTime;
             sessionTimeText.text = sessionTimeTextPrefix + timeRemaining.ToString("F0");
             yield return new WaitForSeconds(1.0f);

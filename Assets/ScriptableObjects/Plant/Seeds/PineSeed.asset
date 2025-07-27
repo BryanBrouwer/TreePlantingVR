@@ -20,7 +20,7 @@ MonoBehaviour:
   - key: 0
     value:
       plantPrefab: {fileID: 1374974701196652540, guid: 801f72ed02a68ca4fb4f71bead001e64, type: 3}
-      actionUIOffset: {x: 0, y: 0, z: 0}
+      actionUIOffset: {x: 0, y: 1, z: 0.1}
       scorePoints: 10
       nextLifeState: 1
       growthActions:
@@ -29,7 +29,7 @@ MonoBehaviour:
   - key: 1
     value:
       plantPrefab: {fileID: 5548780806841113117, guid: e5883e7dbfb4b3b40b6fdcd45c77df82, type: 3}
-      actionUIOffset: {x: 0, y: 0, z: 0}
+      actionUIOffset: {x: 0, y: 1, z: 0.4}
       scorePoints: 15
       nextLifeState: 2
       growthActions:

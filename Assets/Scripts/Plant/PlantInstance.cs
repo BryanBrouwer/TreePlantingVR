@@ -21,6 +21,12 @@ namespace Plant
         private readonly Dictionary<(GrowthActionRuntime action, GameObject tool), Coroutine> _activeCoroutines = new Dictionary<(GrowthActionRuntime action, GameObject tool), Coroutine>();
         private readonly List<IPlantTool> _overlappingTools = new List<IPlantTool>();
         
+        [SerializeField] private GameObject growthActionsUIDisplay;
+        [SerializeField] private GameObject growthActionsUIContainer;
+        [SerializeField] private GameObject growthActionUIIndicatorPrefab;
+        private readonly Dictionary<GrowthActionRuntime, GameObject> _growthActionUIObjects = new Dictionary<GrowthActionRuntime, GameObject>();
+
+        
         private IEnumerator ProgressGrowthAction(GrowthActionRuntime actionRuntime, IPlantTool tool)
         {
             while (_activeGrowthActions.Contains(actionRuntime))
@@ -31,9 +37,6 @@ namespace Plant
                     yield return null;
                     continue;
                 }
-                
-                Debug.Log("Adding progress");
-
                 actionRuntime.AddProgress(tool.completionRatePerSecond * Time.deltaTime);;
 
                 // Check if progress is complete
@@ -69,6 +72,12 @@ namespace Plant
             foreach (var key in keysToRemove)
                 _activeCoroutines.Remove(key);
             
+            if (_growthActionUIObjects.TryGetValue(actionRuntime, out GameObject uiObject))
+            {
+                Destroy(uiObject);
+                _growthActionUIObjects.Remove(actionRuntime);
+            }
+            
             // Check if all actions are completed, this way we can efficiently transition to the next state following an observer pattern instead of relying on update ticks.
             if (_activeGrowthActions.Count == 0)
                 TransitionToState(seedData.GetLifeStateConfig(_currentLifeState).nextLifeState);
@@ -87,14 +96,23 @@ namespace Plant
                 return;
             
             // Setting up new growth actions and delegate subscriptions.
-            foreach (var growthAction in seedData.GetLifeStateConfig(lifeState).growthActions)
+            foreach (var growthAction in lifeStateConfig.growthActions)
             {
                 growthAction.SetupAction(this);
                 GrowthActionRuntime newActionRuntime = new GrowthActionRuntime(this, growthAction);
                 newActionRuntime.OnTimeout += OnActionTimeout;
-                newActionRuntime.StartTimeout();
+                
                 _activeGrowthActions.Add(newActionRuntime);
+                
+                //Setup the growth action UI
+                var newActionUIObject = Instantiate(growthActionUIIndicatorPrefab, growthActionsUIContainer.transform);
+                _growthActionUIObjects[newActionRuntime] = newActionUIObject;
+                var newActionUIIndicator = newActionUIObject.GetComponent<GrowthActionUIIndicator>();
+                newActionRuntime.StartTimeout(newActionUIIndicator);
             }
+            
+            growthActionsUIDisplay.SetActive(true);
+            growthActionsUIDisplay.transform.position = transform.position + lifeStateConfig.actionUIOffset;
         }
         
         private void OnActionTimeout(GrowthActionRuntime actionRuntime)
@@ -113,6 +131,14 @@ namespace Plant
                 runtime.OnTimeout -= OnActionTimeout;
             }
             _activeGrowthActions.Clear();
+            
+            //Cleanup the UI indicators in case transition is called without completing them
+            foreach (var uiObject in _growthActionUIObjects.Values)
+            {
+                Destroy(uiObject);
+            }
+            _growthActionUIObjects.Clear();
+            growthActionsUIDisplay.SetActive(false);
 
             if (_plantPrefabInstance)
                 Destroy(_plantPrefabInstance);
@@ -144,8 +170,7 @@ namespace Plant
                     var key = (actionRuntime, toolObject);
                     if (_activeCoroutines.ContainsKey(key))
                         continue;
-
-                    Debug.Log("Starting Progress coroutine");
+                    
                     Coroutine routine = StartCoroutine(ProgressGrowthAction(actionRuntime, tool));
                     _activeCoroutines[key] = routine;
                 }
@@ -175,8 +200,7 @@ namespace Plant
         {
             if (!other.CompareTag("PlantTool"))
                 return;
-            Debug.Log("Plant tool entered");
-
+            
             var plantTool = other.GetComponent<IPlantTool>();
             if (plantTool == null)
                 return;
@@ -193,8 +217,7 @@ namespace Plant
         {
             if (!other.CompareTag("PlantTool"))
                 return;
-            Debug.Log("Plant tool exited");
-            
+
             var plantTool = other.GetComponent<IPlantTool>();
             if (plantTool != null && _overlappingTools.Contains(plantTool))
             {

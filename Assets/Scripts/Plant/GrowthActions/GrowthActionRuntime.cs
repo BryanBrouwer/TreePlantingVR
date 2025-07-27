@@ -2,6 +2,7 @@
 using System.Collections;
 using Plant.State;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Plant.GrowthActions
 {
@@ -13,6 +14,7 @@ namespace Plant.GrowthActions
         
         private readonly PlantInstance _owner;
         private Coroutine _timeoutCoroutine;
+        private GrowthActionUIIndicator growthActionUIIndicator;
         
         public event Action<GrowthActionRuntime, int> OnTimeoutIntervalChanged;
         public event Action<GrowthActionRuntime> OnTimeout;
@@ -28,7 +30,7 @@ namespace Plant.GrowthActions
         private IEnumerator ActionTimeout()
         {
             float totalTime = growthAction.timeToComplete;
-            float interval = growthAction.timeToComplete / 3f;
+            float interval = growthAction.timeToComplete / 4f;
             int currentInterval = 0;
 
             while (timeRemaining > 0f)
@@ -37,20 +39,25 @@ namespace Plant.GrowthActions
                 timeRemaining -= Time.deltaTime;
                 
                 int newInterval = Mathf.FloorToInt((totalTime - timeRemaining) / interval);
-                if (newInterval != currentInterval)
+                if (newInterval != currentInterval && newInterval <= 3)
                 {
                     currentInterval = newInterval;
                     OnTimeoutIntervalChanged?.Invoke(this, currentInterval);
-                    // TODO: Link future UI to this event
-                    Debug.Log("Current interval changed");
+                    if (growthActionUIIndicator)
+                    {
+                        growthActionUIIndicator.SetIntervalState(currentInterval);
+                    }
                 }
             }
             // Since it was not canceled, we can assume it timed out.
             OnTimeout?.Invoke(this);
         }
 
-        public void StartTimeout()
+        public void StartTimeout(GrowthActionUIIndicator actionUIIndicator)
         {
+            growthActionUIIndicator = actionUIIndicator;
+            growthActionUIIndicator.SetActionIcon(growthAction.actionImage);
+            growthActionUIIndicator.SetIntervalState(1);
             // In case the coroutine might still be running.
             StopTimeout();
             _timeoutCoroutine = _owner.StartCoroutine(ActionTimeout());
