@@ -131,19 +131,7 @@ MonoBehaviour:
       m_Calls: []
   m_Activated:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2132109197161826463}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_Deactivated:
     m_PersistentCalls:
       m_Calls: []
@@ -221,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4a086f93c6c4da9a623406e8d294f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CompletionRatePerSecond>k__BackingField: 20
+  <completionRatePerSecond>k__BackingField: 20
   waterVisuals: {fileID: 3209539679715851636}
   tiltAngleThreshold: 35
 --- !u!136 &1201253581377481704

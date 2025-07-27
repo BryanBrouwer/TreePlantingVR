@@ -19,20 +19,23 @@ namespace Plant.Condition
         public override bool CheckCondition(PlantableSeed seed)
         {
             // Since I added the plant instance manager to handle easier filtering of plant types, we just get the list from their, and loop over the relevant plants for a distance calculation
-            // We need to check all instances of type, so we can only early return if there is a negative result.
+            // for near we only need one success to complete, however for far we need all to succeed.
             var plantToCheck = GetPlantsToCheck();
             foreach (var plant in plantToCheck)
             {
-                var distance = Vector3.Distance(seed.transform.position, plant.transform.position);
+                var distance = Vector3.Distance(seed.GetPlantPosition(), plant.transform.position);
                 if (shouldBeNear)
                 {
-                    if (distance > checkDistance) return false;
+                    if (distance < checkDistance) return true;
                 }
                 else
                 {
                     if (distance < checkDistance) return false;
                 }
             }
+            // We didnt find any plants within the range, so near would be false, but otherwise default to true for far.
+            if (shouldBeNear) 
+                return false;
             return true;
         }
     }

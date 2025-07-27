@@ -51,3 +51,4 @@ MonoBehaviour:
       nextLifeState: 3
       growthActions: []
       hasNextLifeState: 0
+  <plantPreviewPrefab>k__BackingField: {fileID: 9128373408457495857, guid: a32327d04908e4d439e174a828bab7ce, type: 3}
