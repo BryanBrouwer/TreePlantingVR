@@ -5,6 +5,7 @@ using Plant.GrowthActions;
 using Plant.State;
 using Tool;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Plant
 {
@@ -73,8 +74,11 @@ namespace Plant
         
         public void SetupState(LifeState lifeState)
         {
-            _plantPrefabInstance = Instantiate(seedData.GetLifeStateConfig(lifeState).plantPrefab, transform);
+            var lifeStateConfig = seedData.GetLifeStateConfig(lifeState);
+            _plantPrefabInstance = Instantiate(lifeStateConfig.plantPrefab, transform);
             _currentLifeState = lifeState;
+            
+            ScoreManager.Instance.AddScore(lifeStateConfig.scorePoints);
 
             // If there is no next life state, we are done.
             if (!seedData.GetLifeStateConfig(_currentLifeState).hasNextLifeState)
@@ -113,6 +117,13 @@ namespace Plant
 
             SetupState(lifeState);
             RecheckOverlaps();
+        }
+
+        public void Initialize(SeedData seedData)
+        {
+            this.seedData = seedData;
+            SetupState(LifeState.Seed);
+            PlantInstanceManager.Instance.AddPlantInstance(this);
         }
 
         private void HandleToolInteraction(IPlantTool tool, GameObject toolObject)
@@ -187,6 +198,14 @@ namespace Plant
                 _activeCoroutines.Remove(key);
         }
 
+        private void OnEnable()
+        {
+            if (!seedData)
+                return;
+            
+            PlantInstanceManager.Instance.AddPlantInstance(this);
+        }
+
         private void OnDisable()
         {
             //To avoid memory leaks, stop all coroutines when the object is disabled.
@@ -196,6 +215,8 @@ namespace Plant
                     StopCoroutine(kvp.Value);
             }
             _activeCoroutines.Clear();
+            
+            PlantInstanceManager.Instance.RemovePlantInstance(this);
         }
     }
 }

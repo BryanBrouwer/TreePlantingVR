@@ -26,7 +26,9 @@ namespace Plant
         {
             if (!_plantInstances.ContainsKey(plantInstance.seedData.plantType))
                 _plantInstances.Add(plantInstance.seedData.plantType, new List<PlantInstance>());
-            _plantInstances[plantInstance.seedData.plantType].Add(plantInstance);
+            
+            if (!_plantInstances[plantInstance.seedData.plantType].Contains(plantInstance))
+                _plantInstances[plantInstance.seedData.plantType].Add(plantInstance);
         }
         
         public void RemovePlantInstance(PlantInstance plantInstance)

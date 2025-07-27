@@ -35,8 +35,7 @@ namespace Plant
             {
                 plantInstance = newPlant.AddComponent<PlantInstance>();
             }
-            plantInstance.seedData = seedData;
-            plantInstance.SetupState(LifeState.Seed);
+            plantInstance.Initialize(seedData);
             
             Destroy(gameObject);
         }

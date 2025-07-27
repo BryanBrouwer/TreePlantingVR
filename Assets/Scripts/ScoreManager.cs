@@ -15,7 +15,7 @@ public class ScoreManager
     }
         
     private int _score;
-    private event Action<int> OnScoreChanged;
+    public event Action<int> OnScoreChanged;
         
     private ScoreManager()
     {
