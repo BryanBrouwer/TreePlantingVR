@@ -138,3 +138,8 @@ Trowel PNG
 Currently the only things remaining from my plans would be the weeding growth action and a demo scene
 For the weeding action I need to make the Trowel tool and a weeding action, then assign it to some trees their steps.
 For this action I will spawn an additional mesh to represent weeds, which gets removed upon completion.
+
+Currently I have the full demo done, I am quite happy with it especially from a feature completeness point of view.
+Known improvement areas are:
+- Another pass on the scripts to see which areas can be cleaned up, since at the end some aspects were a bit more rushed for the balance of time.
+- The action UI indicators currently are stuck in 1 place depending on each stages their provided offset. However it would be nicer if they moved around the tree to always face the direction of the player. This could be done quite easily by adding a update hook in the plant and then calculating the direction towards the player.
