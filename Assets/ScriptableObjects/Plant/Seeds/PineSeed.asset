@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f0ef79527f415698056393ff19701e, type: 3}
   m_Name: PineSeed
   m_EditorClassIdentifier: 
-  <plantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}
+  <plantType>k__BackingField: {fileID: 11400000, guid: 53bcb353658d9154b96514bac68beef7, type: 2}
   <conditions>k__BackingField:
   - {fileID: 11400000, guid: 646d3e880f58eef4ab53b5c5c1dc3504, type: 2}
   - {fileID: 11400000, guid: 1253319f3a8acbb468480d5f481bdfe9, type: 2}

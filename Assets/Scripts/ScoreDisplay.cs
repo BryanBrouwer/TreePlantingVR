@@ -8,7 +8,6 @@ public class ScoreDisplay : MonoBehaviour
     
     public void UpdateScore(int score)
     {
-        Debug.Log(score);
         scoreText.text = scoreTextPrefix + score;
     }
         

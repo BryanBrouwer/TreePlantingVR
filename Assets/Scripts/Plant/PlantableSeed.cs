@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using Plant.Condition;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -20,6 +20,7 @@ namespace Plant
         private GameObject _plantPreview;
         private LineRenderer _lineRenderer;
         private bool _isCurrentlyPlantable = false;
+        public event Action<PlantableSeed> OnSeedDestroyed;
 
         //Checks if all conditions are met to plant the seed.
         private bool CheckPlantable()
@@ -47,7 +48,7 @@ namespace Plant
                 plantInstance = newPlant.AddComponent<PlantInstance>();
             }
             plantInstance.Initialize(seedData);
-            
+            OnSeedDestroyed?.Invoke(this);
             Destroy(gameObject);
         }
         

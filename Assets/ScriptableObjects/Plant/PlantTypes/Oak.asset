@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Oak
   m_EditorClassIdentifier: 
   plantName: Oak
-  plantImage: {fileID: 7681201850867341242, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
-  plantDescription: An oak tree.
+  plantImage: {fileID: 21300000, guid: 9513a6ef8e69bfd4fba05ce539511716, type: 3}
+  plantDescription: Needs sufficient space, and only grows on grassy terrain.
