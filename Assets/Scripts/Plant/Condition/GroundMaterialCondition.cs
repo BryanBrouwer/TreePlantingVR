@@ -8,7 +8,8 @@ namespace Plant.Condition
     [CreateAssetMenu(fileName = "NewGroundMaterialCondition", menuName = "Scriptable Objects/Plant/Condition/Ground Material", order = 0)]
     public class GroundMaterialCondition : PlantCondition
     {
-        [field: SerializeField] public Material allowedMaterial { get; private set; }
+        [field: SerializeField] public Material relevantMaterial { get; private set; }
+        [field: SerializeField] public bool shouldBeMaterial { get; private set; } = true;
         
         public override bool CheckCondition(PlantableSeed seed)
         {
@@ -24,13 +25,11 @@ namespace Plant.Condition
                 if (hit.collider.TryGetComponent<Renderer>(out var renderer))
                 {
                     // In a search found that shared materials are the original materials as in the editor, so we can just check if the material is in this list to avoid dealing with instanced mats.
-                    if (renderer.sharedMaterials.Contains(allowedMaterial))
-                        return true;
+                    if (renderer.sharedMaterials.Contains(relevantMaterial))
+                        return shouldBeMaterial;
                 }
-
             }
-
-            return false;
+            return !shouldBeMaterial;
         }
     }
 }
