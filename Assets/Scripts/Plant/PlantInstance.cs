@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Plant.GrowthActions;
 using Plant.State;
@@ -14,21 +15,55 @@ namespace Plant
         
         private LifeState _currentLifeState;
         private GameObject _plantPrefabInstance;
-        private Dictionary<GrowthAction, bool> _growthActionsCompletionStates;
+        
+        private readonly Dictionary<GrowthAction, float> _growthActionProgressDictionary = new Dictionary<GrowthAction, float>();
+        private readonly Dictionary<(GrowthAction action, GameObject tool), Coroutine> _activeCoroutines = new Dictionary<(GrowthAction action, GameObject tool), Coroutine>();
+        private readonly List<IPlantTool> _overlappingTools = new List<IPlantTool>();
 
-        private bool CheckAllGrowthActionsCompleted()
+        private IEnumerator ProgressGrowthAction(GrowthAction action, IPlantTool tool)
         {
-            return _growthActionsCompletionStates.Keys.All(growthAction => _growthActionsCompletionStates[growthAction]);
+            while (_growthActionProgressDictionary.ContainsKey(action))
+            {
+                if (!tool.isToolActive)
+                {
+                    // If the tool becomes inactive, wait until it becomes active again
+                    yield return null;
+                    continue;
+                }
+
+                _growthActionProgressDictionary[action] += tool.completionRatePerSecond * Time.deltaTime;
+
+                // Check if progress is complete
+                if (_growthActionProgressDictionary[action] >= action.progressTarget)
+                {
+                    SetGrowthActionCompleted(action);
+                    _activeCoroutines.Remove((action, (tool as Component)?.gameObject));
+                    yield break;
+                }
+
+                yield return null;
+            }
         }
         
         private void SetGrowthActionCompleted(GrowthAction action)
         {
-            if (!_growthActionsCompletionStates[action])
+            if (!_growthActionProgressDictionary.Remove(action))
                 return;
-            _growthActionsCompletionStates[action] = true;
+            
+            // Stop all coroutines associated with this action
+            var keysToRemove = new List<(GrowthAction, GameObject)>();
+            foreach (var kvp in _activeCoroutines)
+            {
+                if (kvp.Key.action != action) 
+                    continue;
+                StopCoroutine(kvp.Value);
+                keysToRemove.Add(kvp.Key);
+            }
+            foreach (var key in keysToRemove)
+                _activeCoroutines.Remove(key);
             
             //Check if all actions are completed, this way we can efficiently transition to the next state following an observer pattern instead of relying on update ticks.
-            if (CheckAllGrowthActionsCompleted())
+            if (_growthActionProgressDictionary.Count == 0)
                 TransitionToState(seedData.GetLifeStateConfig(_currentLifeState).nextLifeState);
         }
         
@@ -42,12 +77,11 @@ namespace Plant
                 return;
             
             // Setting up new growth actions and delegate subscriptions.
-            _growthActionsCompletionStates = new Dictionary<GrowthAction, bool>();
+            _growthActionProgressDictionary.Clear();
             foreach (var growthAction in seedData.GetLifeStateConfig(lifeState).growthActions)
             {
                 growthAction.SetupAction(this);
-                _growthActionsCompletionStates.Add(growthAction, false);
-                growthAction.OnComplete += SetGrowthActionCompleted;
+                _growthActionProgressDictionary.Add(growthAction, 0);
                 //TODO Setup the UI indicators for the growth actions
             }
         }
@@ -56,54 +90,104 @@ namespace Plant
         {
             if (_currentLifeState == lifeState)
                 return;
-            
-            // Cleaning up old plant instance and delegate subscriptions.
+
             if (_plantPrefabInstance)
-            {
                 Destroy(_plantPrefabInstance);
-                foreach (var growthAction in _growthActionsCompletionStates.Keys)
+
+            SetupState(lifeState);
+
+            RecheckOverlaps();
+        }
+
+        private void HandleToolInteraction(IPlantTool tool, GameObject toolObject)
+        {
+            foreach (var growthAction in _growthActionProgressDictionary.Keys.ToList())
+            {
+                if (growthAction.toolType != tool.toolType)
+                    continue;
+
+                if (growthAction.isInstantCompletion)
                 {
-                    growthAction.OnComplete -= SetGrowthActionCompleted;
+                    SetGrowthActionCompleted(growthAction);
+                }
+                else
+                {
+                    var key = (growthAction, toolObject);
+                    if (_activeCoroutines.ContainsKey(key))
+                        continue;
+
+                    Coroutine routine = StartCoroutine(ProgressGrowthAction(growthAction, tool));
+                    _activeCoroutines[key] = routine;
                 }
             }
-            
-            SetupState(lifeState);
         }
         
+        private void RecheckOverlaps()
+        {
+            foreach (var plantTool in _overlappingTools)
+            {
+                if (plantTool != null && plantTool.isToolActive)
+                {
+                    HandleToolInteraction(plantTool, (plantTool as Component)?.gameObject);
+                }
+            }
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!other.CompareTag("PlantTool"))
+                return;
+            Debug.Log("Plant tool entered");
+
+            var plantTool = other.GetComponent<IPlantTool>();
+            if (plantTool == null || !plantTool.isToolActive)
+                return;
+            
+            if (!_overlappingTools.Contains(plantTool))
+                _overlappingTools.Add(plantTool);
+            
+            HandleToolInteraction(plantTool, other.gameObject);
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (!other.CompareTag("PlantTool"))
+                return;
+            
+            var plantTool = other.GetComponent<IPlantTool>();
+            if (plantTool != null && _overlappingTools.Contains(plantTool))
+                _overlappingTools.Remove(plantTool);
+
+            // Stop all coroutines associated with this tool
+            var keysToRemove = new List<(GrowthAction, GameObject)>();
+            foreach (var kvp in _activeCoroutines)
+            {
+                if (kvp.Key.tool != other.gameObject) 
+                    continue;
+                StopCoroutine(kvp.Value);
+                keysToRemove.Add(kvp.Key);
+            }
+            foreach (var key in keysToRemove)
+                _activeCoroutines.Remove(key);
+        }
+
         private void Start()
         {
             if (!seedData)
                 return;
             
-            TransitionToState(LifeState.Seed);
-        }
-        
-        private void OnTriggerEnter(Collider other)
-        {
-            if (!other.CompareTag("PlantTool")) 
-                return;
-            
-            var plantTool = other.GetComponent<IPlantTool>();
-            if (plantTool == null) 
-                return;
-            if (!plantTool.isToolActive)
-                return;
-
-            foreach (var growthAction in _growthActionsCompletionStates.Keys)
-            {
-                //TODO Check if the tool is compatible with the growth action
-                //TODO I am thinking about refactoring the growthactions completion states into a list where actions get added on state transation,
-                //          and removed upon completion, this would also save addition if statement checks in here
-            }
-                
+            SetupState(LifeState.Seed);
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnDisable()
         {
-            if (other.CompareTag("PlantTool"))
+            //To avoid memory leaks, stop all coroutines when the object is disabled.
+            foreach (var kvp in _activeCoroutines)
             {
-                
+                if (kvp.Value != null)
+                    StopCoroutine(kvp.Value);
             }
+            _activeCoroutines.Clear();
         }
     }
 }
