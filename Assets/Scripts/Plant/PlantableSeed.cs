@@ -2,6 +2,7 @@
 using System.Linq;
 using Plant.Condition;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -13,6 +14,7 @@ namespace Plant
         public SeedData seedData;
         [field: SerializeField] public Collider seedCollider { get; private set; }
         [field: SerializeField] public GameObject plantPrefab { get; private set; }
+        [field: SerializeField] public float maxRaycastDistance { get; private set; } = 10;
         private bool isPlantingMode { get; set; } = false;
         private Coroutine _plantingModeCoroutine;
         private GameObject _plantPreview;
@@ -60,7 +62,7 @@ namespace Plant
                 _isCurrentlyPlantable = false;
                 _lineRenderer.enabled = false;
 
-                if (Physics.Raycast(startPos, direction, out var hit, Mathf.Infinity, layerMask))
+                if (Physics.Raycast(startPos, direction, out var hit, maxRaycastDistance, layerMask))
                 {
                     _plantPreview.SetActive(true);
                     _plantPreview.transform.position = hit.point;

@@ -15,6 +15,7 @@ MonoBehaviour:
   <plantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}
   <conditions>k__BackingField:
   - {fileID: 11400000, guid: 1253319f3a8acbb468480d5f481bdfe9, type: 2}
+  - {fileID: 11400000, guid: ed793ee12ea7912418f5f845ba943449, type: 2}
   lifeStateConfigList:
   - key: 0
     value:
