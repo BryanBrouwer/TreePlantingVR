@@ -51,4 +51,5 @@ MonoBehaviour:
       nextLifeState: 3
       growthActions: []
       hasNextLifeState: 0
+  <seedBagsMesh>k__BackingField: {fileID: -7829842043862283265, guid: 1a20abb060473d0469ece960a6f5f119, type: 3}
   <plantPreviewPrefab>k__BackingField: {fileID: 9128373408457495857, guid: a32327d04908e4d439e174a828bab7ce, type: 3}

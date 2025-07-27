@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23c830c6cc7b4b839ec22ab0451bb4a4, type: 3}
   m_Name: GrassGroundMaterial
   m_EditorClassIdentifier: 
-  <allowedMaterial>k__BackingField: {fileID: -9117483709511198939, guid: 329b1a9afd16c04468df1c0ed9f3da35, type: 3}
+  <relevantMaterial>k__BackingField: {fileID: -9117483709511198939, guid: 329b1a9afd16c04468df1c0ed9f3da35, type: 3}
+  <shouldBeMaterial>k__BackingField: 1

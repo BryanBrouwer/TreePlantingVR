@@ -38,8 +38,14 @@ namespace Plant
             var seedObject = Instantiate(seedPrefab, transform.position, Quaternion.identity);
             _seedInstance = seedObject.GetComponent<PlantableSeed>();
             _seedInstance.seedData = seedData;
-            _seedInstance.OnSeedDestroyed += CleanupSeed;
 
+            if (seedData.seedBagsMesh)
+            {
+                var meshFilter = seedObject.GetComponent<MeshFilter>();
+                meshFilter.mesh = seedData.seedBagsMesh;
+            }
+            
+            _seedInstance.OnSeedDestroyed += CleanupSeed;
         }
         
         public void DestroySeed()

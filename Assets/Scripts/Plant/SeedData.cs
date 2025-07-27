@@ -12,6 +12,7 @@ namespace Plant
         [field: SerializeField] public PlantCondition[] conditions { get; private set; }
         [field: SerializeField] private List<CustomKeyValuePair<LifeState, LifeStateConfig>> lifeStateConfigList = new List<CustomKeyValuePair<LifeState, LifeStateConfig>>();
         private readonly Dictionary<LifeState, LifeStateConfig> _lifeStateConfigs = new Dictionary<LifeState, LifeStateConfig>();
+        [field: SerializeField] public Mesh seedBagsMesh { get; private set; }
         
         [field: SerializeField] public GameObject plantPreviewPrefab { get; private set; }
         
