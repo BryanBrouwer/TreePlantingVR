@@ -31,6 +31,8 @@ namespace Plant
                     yield return null;
                     continue;
                 }
+                
+                Debug.Log("Adding progress");
 
                 actionRuntime.AddProgress(tool.completionRatePerSecond * Time.deltaTime);;
 
@@ -143,6 +145,7 @@ namespace Plant
                     if (_activeCoroutines.ContainsKey(key))
                         continue;
 
+                    Debug.Log("Starting Progress coroutine");
                     Coroutine routine = StartCoroutine(ProgressGrowthAction(actionRuntime, tool));
                     _activeCoroutines[key] = routine;
                 }
@@ -160,6 +163,14 @@ namespace Plant
             }
         }
         
+        private void OnToolActivated(IPlantTool tool)
+        {
+            if (_overlappingTools.Contains(tool))
+            {
+                HandleToolInteraction(tool, (tool as Component)?.gameObject);
+            }
+        }
+        
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("PlantTool"))
@@ -167,11 +178,13 @@ namespace Plant
             Debug.Log("Plant tool entered");
 
             var plantTool = other.GetComponent<IPlantTool>();
-            if (plantTool == null || !plantTool.isToolActive)
+            if (plantTool == null)
                 return;
             
             if (!_overlappingTools.Contains(plantTool))
                 _overlappingTools.Add(plantTool);
+            
+            plantTool.OnToolActivated += OnToolActivated;
             
             HandleToolInteraction(plantTool, other.gameObject);
         }
@@ -180,10 +193,14 @@ namespace Plant
         {
             if (!other.CompareTag("PlantTool"))
                 return;
+            Debug.Log("Plant tool exited");
             
             var plantTool = other.GetComponent<IPlantTool>();
             if (plantTool != null && _overlappingTools.Contains(plantTool))
+            {
+                plantTool.OnToolActivated -= OnToolActivated;
                 _overlappingTools.Remove(plantTool);
+            }
 
             // Stop all coroutines associated with this tool
             var keysToRemove = new List<(GrowthActionRuntime, GameObject)>();

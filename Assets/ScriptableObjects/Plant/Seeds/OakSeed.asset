@@ -18,7 +18,7 @@ MonoBehaviour:
   lifeStateConfigList:
   - key: 0
     value:
-      plantPrefab: {fileID: 1320647535852208661, guid: 819a6fa8561693e428f5bb7535d60e8d, type: 3}
+      plantPrefab: {fileID: 1374974701196652540, guid: 801f72ed02a68ca4fb4f71bead001e64, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
       scorePoints: 10
       nextLifeState: 1
@@ -27,7 +27,7 @@ MonoBehaviour:
       hasNextLifeState: 1
   - key: 1
     value:
-      plantPrefab: {fileID: 9128373408457495857, guid: 073ee13af09f354438b91f2097d8a370, type: 3}
+      plantPrefab: {fileID: 4001344593633972264, guid: d19ae620ac92c9846b31c4dd12ca8cfa, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
       scorePoints: 15
       nextLifeState: 2
@@ -36,7 +36,7 @@ MonoBehaviour:
       hasNextLifeState: 1
   - key: 2
     value:
-      plantPrefab: {fileID: 5106793781867772463, guid: 89cfb3c3412ad1c4e8fa7678de02fa75, type: 3}
+      plantPrefab: {fileID: 2939920370433810250, guid: cfe9d0b074b69294e887ebe608481410, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
       scorePoints: 25
       nextLifeState: 2
@@ -44,7 +44,7 @@ MonoBehaviour:
       hasNextLifeState: 0
   - key: 3
     value:
-      plantPrefab: {fileID: 7413984145818637368, guid: 5ee2332db82651540ae5e5a8485ee0d8, type: 3}
+      plantPrefab: {fileID: 5929488227016195290, guid: 47a63083e5c1f234bbbe9651dd0d4186, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
       scorePoints: -20
       nextLifeState: 3
