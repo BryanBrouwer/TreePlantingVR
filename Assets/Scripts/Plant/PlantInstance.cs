@@ -25,6 +25,7 @@ namespace Plant
         [SerializeField] private GameObject growthActionsUIContainer;
         [SerializeField] private GameObject growthActionUIIndicatorPrefab;
         private readonly Dictionary<GrowthActionRuntime, GameObject> _growthActionUIObjects = new Dictionary<GrowthActionRuntime, GameObject>();
+        public Dictionary<GrowthAction, List<GameObject>> GrowthActionVisualsDictionary = new Dictionary<GrowthAction, List<GameObject>>();
 
         
         private IEnumerator ProgressGrowthAction(GrowthActionRuntime actionRuntime, IPlantTool tool)
@@ -56,6 +57,7 @@ namespace Plant
             if (!_activeGrowthActions.Contains(actionRuntime))
                 return;
             
+            actionRuntime.growthAction.CleanupAction(this);
             actionRuntime.StopTimeout();
             actionRuntime.OnTimeout -= OnActionTimeout;
             _activeGrowthActions.Remove(actionRuntime);

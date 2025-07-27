@@ -132,6 +132,9 @@ https://www.cgtrader.com/free-3d-models/food/miscellaneous/low-poly-sacks
 Water droplet png
 <a href='https://pngtree.com/freepng/water-drop-reflection_21239844.html'>png image from pngtree.com/</a>
 
+Trowel PNG
+<a href='https://pngtree.com/freepng/garden-hoe_20426061.html'>png image from pngtree.com/</a>
+
 Currently the only things remaining from my plans would be the weeding growth action and a demo scene
 For the weeding action I need to make the Trowel tool and a weeding action, then assign it to some trees their steps.
 For this action I will spawn an additional mesh to represent weeds, which gets removed upon completion.

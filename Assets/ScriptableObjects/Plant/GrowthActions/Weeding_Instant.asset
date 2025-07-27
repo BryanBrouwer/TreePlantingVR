@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff80dd76db140f38a1447155774760a, type: 3}
+  m_Name: Weeding_Instant
+  m_EditorClassIdentifier: 
+  <toolType>k__BackingField: 2
+  <timeToComplete>k__BackingField: 30
+  <actionImage>k__BackingField: {fileID: 21300000, guid: ce592b4ca9e5c8b4b87dfc6be693b601, type: 3}
+  <weedingAmount>k__BackingField: 20
+  <shouldInstantComplete>k__BackingField: 1
