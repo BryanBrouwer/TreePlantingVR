@@ -6,6 +6,6 @@ namespace Plant.Condition
     public abstract class PlantCondition : ScriptableObject
     {
         // Function should be overridden by behavior that checks if the seed is current in a valid state to be planted by this condition rule.
-        public abstract bool CheckCondition();
+        public abstract bool CheckCondition(PlantableSeed seed);
     }
 }

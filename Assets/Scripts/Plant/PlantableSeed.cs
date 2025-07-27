@@ -16,7 +16,7 @@ namespace Plant
         {
             PlantCondition[] plantConditions = seedData.conditions;
             //Since we only need to loop over one function, we can use the All() enumerator from .Net
-            return plantConditions.All(condition => condition.CheckCondition());
+            return plantConditions.All(condition => condition.CheckCondition(this));
         }
         
         public void AttemptPlant()

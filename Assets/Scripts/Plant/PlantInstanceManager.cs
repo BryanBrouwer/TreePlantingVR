@@ -37,9 +37,22 @@ namespace Plant
                 instance.Remove(plantInstance);
         }
         
-        public List<PlantInstance> GetPlantInstances(PlantType plantType)
+        public List<PlantInstance> GetPlantInstancesOfType(PlantType plantType)
         {
+            if (!_plantInstances.ContainsKey(plantType))
+                return new List<PlantInstance>();
+            
             return _plantInstances[plantType];
+        }
+
+        public List<PlantInstance> GetAllPlantInstances()
+        {
+            var allPlantInstances = new List<PlantInstance>();
+            foreach (var plantInstances in _plantInstances.Values)
+            {
+                allPlantInstances.AddRange(plantInstances);
+            }
+            return allPlantInstances;
         }
     }
 }

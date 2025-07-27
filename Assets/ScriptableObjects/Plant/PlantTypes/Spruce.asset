@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f721c46e50d545fcb637c5496914fd3a, type: 3}
-  m_Name: DistanceFromOak
+  m_Script: {fileID: 11500000, guid: 523adc28036e4472849f268777bc8db5, type: 3}
+  m_Name: Spruce
   m_EditorClassIdentifier: 
-  <checkDistance>k__BackingField: 30
-  <shouldBeNear>k__BackingField: 1
-  <targetPlantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}
+  plantName: 
+  plantImage: {fileID: 0}
+  plantDescription: 
