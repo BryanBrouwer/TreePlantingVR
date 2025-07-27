@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35f0ef79527f415698056393ff19701e, type: 3}
-  m_Name: SpruceSeed
+  m_Name: PineSeed
   m_EditorClassIdentifier: 
   <plantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}
   <conditions>k__BackingField:

@@ -111,3 +111,17 @@ PlantInstanceManager and for ScoreManager I am thinking of utlizing singletons f
 For limiting the session length I will likely just add a timer of 10 minutes per session. When done play a sound effect to get the players attention back to the stand and showcase the final score. 
 With a button to try again. This way you dont confuse the player with random teleports or unexpected UI popups.
 But I might need to look into more guidance back to the board.
+
+
+-- Assets used:
+Kenney - Nature Kit
+https://kenney.nl/assets/nature-kit
+
+Kenny - Survival Kit
+https://kenney.nl/assets/survival-kit
+
+Low Poly Watering Can by singingstranger
+https://sketchfab.com/3d-models/low-poly-watering-can-09bf8c6542c6449db08a0d4114695dbd
+
+Low poly Sewing Scissors by AkaiiTwki
+https://sketchfab.com/3d-models/low-poly-sewing-scissors-aa615ea995ae417ab4a1b3717a14b28e
