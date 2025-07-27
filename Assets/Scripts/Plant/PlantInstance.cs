@@ -19,7 +19,37 @@ namespace Plant
         private readonly Dictionary<GrowthAction, float> _growthActionProgressDictionary = new Dictionary<GrowthAction, float>();
         private readonly Dictionary<(GrowthAction action, GameObject tool), Coroutine> _activeCoroutines = new Dictionary<(GrowthAction action, GameObject tool), Coroutine>();
         private readonly List<IPlantTool> _overlappingTools = new List<IPlantTool>();
+        
+        private readonly Dictionary<GrowthAction, Coroutine> _actionTimeoutCoroutines = new Dictionary<GrowthAction, Coroutine>();
 
+        private IEnumerator ActionTimeout(GrowthAction action)
+        {
+            float remainingTime = action.timeToComplete;
+            float interval = action.timeToComplete / 3f;
+            int currentInterval = 0;
+
+            while (remainingTime > 0f)
+            {
+                yield return null;
+                remainingTime -= Time.deltaTime;
+                
+                int newInterval = Mathf.FloorToInt((action.timeToComplete - remainingTime) / interval);
+                if (newInterval != currentInterval)
+                {
+                    currentInterval = newInterval;
+                    // TODO: Trigger UI update to reflect background interval change
+                    Debug.Log("Current interval changed");
+                }
+            }
+
+            // If the action is still active after timeout, plant dies
+            if (_growthActionProgressDictionary.ContainsKey(action))
+            {
+                TransitionToState(LifeState.Dead);
+            }
+            _actionTimeoutCoroutines.Remove(action);
+        }
+        
         private IEnumerator ProgressGrowthAction(GrowthAction action, IPlantTool tool)
         {
             while (_growthActionProgressDictionary.ContainsKey(action))
@@ -50,6 +80,13 @@ namespace Plant
             if (!_growthActionProgressDictionary.Remove(action))
                 return;
             
+            // Stop the dying timeout coroutine
+            if (_actionTimeoutCoroutines.TryGetValue(action, out Coroutine timeout))
+            {
+                StopCoroutine(timeout);
+                _actionTimeoutCoroutines.Remove(action);
+            }
+            
             // Stop all coroutines associated with this action
             var keysToRemove = new List<(GrowthAction, GameObject)>();
             foreach (var kvp in _activeCoroutines)
@@ -62,7 +99,7 @@ namespace Plant
             foreach (var key in keysToRemove)
                 _activeCoroutines.Remove(key);
             
-            //Check if all actions are completed, this way we can efficiently transition to the next state following an observer pattern instead of relying on update ticks.
+            // Check if all actions are completed, this way we can efficiently transition to the next state following an observer pattern instead of relying on update ticks.
             if (_growthActionProgressDictionary.Count == 0)
                 TransitionToState(seedData.GetLifeStateConfig(_currentLifeState).nextLifeState);
         }
@@ -82,7 +119,9 @@ namespace Plant
             {
                 growthAction.SetupAction(this);
                 _growthActionProgressDictionary.Add(growthAction, 0);
-                //TODO Setup the UI indicators for the growth actions
+                // Start a coroutine per action to handle the dying timeout of the plant
+                Coroutine timeout = StartCoroutine(ActionTimeout(growthAction));
+                _actionTimeoutCoroutines[growthAction] = timeout;
             }
         }
 

@@ -10,6 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c98e1c51930149f49564a6e447e4e266, type: 3}
-  m_Name: WaterAction_10
+  m_Name: WaterAction_100
   m_EditorClassIdentifier: 
-  <waterAmount>k__BackingField: 10
+  <toolType>k__BackingField: 1
+  <timeToComplete>k__BackingField: 30
+  <actionImage>k__BackingField: {fileID: 0}
+  <waterAmount>k__BackingField: 100
