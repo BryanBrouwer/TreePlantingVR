@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-
+using Plant;
 using UnityEngine;
 
 public class SessionManager : MonoBehaviour
@@ -53,6 +53,10 @@ public class SessionManager : MonoBehaviour
         _sessionUpdateCoroutine = StartCoroutine(SessionUpdate());
         OnSessionStarted?.Invoke();
         ScoreManager.Instance.ResetScore();
+        foreach (var plantInstance in PlantInstanceManager.Instance.GetAllPlantInstances())
+        {
+            Destroy(plantInstance.gameObject);
+        }
     }
     
     public void EndSession()
