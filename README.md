@@ -1,13 +1,16 @@
 # TreePlantingVR
 
-A runable build can be found in the builds folder or in the releases:
-
-
+A runnable build can be found in the releases:
+https://github.com/BryanBrouwer/TreePlantingVR/releases
 
 Check out the documentation section for some additional documents:
 https://github.com/BryanBrouwer/TreePlantingVR/tree/main/Documentation
-Specifically the notes document contains some extra thought processes I have had during development:
+
+Specifically, the notes document contains some extra thought processes I have had during development:
 https://github.com/BryanBrouwer/TreePlantingVR/blob/main/Documentation/Notes.txt
+
+And a report on the time spent:
+https://github.com/BryanBrouwer/TreePlantingVR/blob/main/Documentation/TimeTrackingReportForV1.pdf
 
 -- Assets used:
 Kenney - Nature Kit
