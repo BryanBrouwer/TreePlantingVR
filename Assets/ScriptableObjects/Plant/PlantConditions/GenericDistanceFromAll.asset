@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc384efeae3343bab35f1be215e8e922, type: 3}
   m_Name: GenericDistanceFromAll
   m_EditorClassIdentifier: 
-  <checkDistance>k__BackingField: 10
+  <checkDistance>k__BackingField: 2
   <shouldBeNear>k__BackingField: 0

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35f0ef79527f415698056393ff19701e, type: 3}
-  m_Name: OakSeed
+  m_Name: PalmSeed
   m_EditorClassIdentifier: 
-  <plantType>k__BackingField: {fileID: 11400000, guid: c007ee4108673f84eb628dac0a3d229f, type: 2}
+  <plantType>k__BackingField: {fileID: 11400000, guid: 0ddc8188f841c354f99a5c49d7e5250c, type: 2}
   <conditions>k__BackingField:
   - {fileID: 11400000, guid: 1253319f3a8acbb468480d5f481bdfe9, type: 2}
-  - {fileID: 11400000, guid: ed793ee12ea7912418f5f845ba943449, type: 2}
+  - {fileID: 11400000, guid: 646d3e880f58eef4ab53b5c5c1dc3504, type: 2}
   lifeStateConfigList:
   - key: 0
     value:
@@ -25,21 +25,23 @@ MonoBehaviour:
       nextLifeState: 1
       growthActions:
       - {fileID: 11400000, guid: 70855e42cdb9dce4aad4f89621362d66, type: 2}
+      - {fileID: 11400000, guid: be33bef66f3ca0842917f37a0fb1ef36, type: 2}
       hasNextLifeState: 1
   - key: 1
     value:
-      plantPrefab: {fileID: 4001344593633972264, guid: d19ae620ac92c9846b31c4dd12ca8cfa, type: 3}
+      plantPrefab: {fileID: 7527178764047887198, guid: 69ba26b9d4f58504eae8323a9fa4ba6b, type: 3}
       actionUIOffset: {x: 0, y: 1, z: 0.4}
-      scorePoints: 15
+      scorePoints: 20
       nextLifeState: 2
       growthActions:
       - {fileID: 11400000, guid: 70855e42cdb9dce4aad4f89621362d66, type: 2}
+      - {fileID: 11400000, guid: be33bef66f3ca0842917f37a0fb1ef36, type: 2}
       hasNextLifeState: 1
   - key: 2
     value:
-      plantPrefab: {fileID: 2939920370433810250, guid: cfe9d0b074b69294e887ebe608481410, type: 3}
+      plantPrefab: {fileID: 5754044372598621578, guid: ef42e1cfd72841544a85156bcb4d9086, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
-      scorePoints: 25
+      scorePoints: 35
       nextLifeState: 2
       growthActions: []
       hasNextLifeState: 0
@@ -47,9 +49,9 @@ MonoBehaviour:
     value:
       plantPrefab: {fileID: 5929488227016195290, guid: 47a63083e5c1f234bbbe9651dd0d4186, type: 3}
       actionUIOffset: {x: 0, y: 0, z: 0}
-      scorePoints: -20
+      scorePoints: -25
       nextLifeState: 3
       growthActions: []
       hasNextLifeState: 0
-  <seedBagsMesh>k__BackingField: {fileID: -7829842043862283265, guid: 1a20abb060473d0469ece960a6f5f119, type: 3}
-  <plantPreviewPrefab>k__BackingField: {fileID: 4001344593633972264, guid: ad751282cb3009543b7e38b731b93c6e, type: 3}
+  <seedBagsMesh>k__BackingField: {fileID: 2432025738443798183, guid: 1a20abb060473d0469ece960a6f5f119, type: 3}
+  <plantPreviewPrefab>k__BackingField: {fileID: 7527178764047887198, guid: 1271a27d5c853b24585576f2174f182f, type: 3}

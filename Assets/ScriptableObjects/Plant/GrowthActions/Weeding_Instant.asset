@@ -17,3 +17,4 @@ MonoBehaviour:
   <actionImage>k__BackingField: {fileID: 21300000, guid: ce592b4ca9e5c8b4b87dfc6be693b601, type: 3}
   <weedingAmount>k__BackingField: 20
   <shouldInstantComplete>k__BackingField: 1
+  weedingEffectPrefab: {fileID: 624325384342648250, guid: 40a01466f5e2b6348a3c88dccfcd696c, type: 3}

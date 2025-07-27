@@ -78,12 +78,18 @@ namespace Plant
                     if (CheckPlantable())
                     {
                         _isCurrentlyPlantable = true;
-                        plantPreviewRenderer.material.color = Color.green;
+                        foreach (var material in plantPreviewRenderer.materials)
+                        {
+                            material.color = Color.green;
+                        }
                     }
                     else
                     {
                         _isCurrentlyPlantable = false;
-                        plantPreviewRenderer.material.color = Color.red;
+                        foreach (var material in plantPreviewRenderer.materials)
+                        {
+                            material.color = Color.red;
+                        }
                     }
                     
                     _lineRenderer.startColor = targetColor;
@@ -125,6 +131,13 @@ namespace Plant
             _lineRenderer.enabled = false;
         }
 
+        private void OnSelectExit(SelectExitEventArgs arg0)
+        {
+            if (isPlantingMode)
+            {
+                DisablePlantingMode(null);
+            }
+        }
         private void OnEnable()
         {
             _lineRenderer = GetComponent<LineRenderer>();
@@ -132,12 +145,17 @@ namespace Plant
             var xrGrabInteractable = gameObject.GetComponent<XRGrabInteractable>();
             xrGrabInteractable.activated.AddListener(EnablePlantingMode);
             xrGrabInteractable.deactivated.AddListener(DisablePlantingMode);
+            xrGrabInteractable.selectExited.AddListener(OnSelectExit);
         }
+        
         private void OnDisable()
         {
             var xrGrabInteractable = gameObject.GetComponent<XRGrabInteractable>();
             xrGrabInteractable.activated.RemoveListener(EnablePlantingMode);
             xrGrabInteractable.deactivated.RemoveListener(DisablePlantingMode);
+            xrGrabInteractable.selectExited.RemoveListener(OnSelectExit);
+            if (_plantPreview)
+                Destroy(_plantPreview);
         }
 
         public Vector3 GetPlantPosition()

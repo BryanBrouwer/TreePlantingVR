@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <plantType>k__BackingField: {fileID: 11400000, guid: 53bcb353658d9154b96514bac68beef7, type: 2}
   <conditions>k__BackingField:
-  - {fileID: 11400000, guid: 646d3e880f58eef4ab53b5c5c1dc3504, type: 2}
   - {fileID: 11400000, guid: 1253319f3a8acbb468480d5f481bdfe9, type: 2}
   lifeStateConfigList:
   - key: 0
@@ -52,4 +51,4 @@ MonoBehaviour:
       growthActions: []
       hasNextLifeState: 0
   <seedBagsMesh>k__BackingField: {fileID: 9049425521953440294, guid: 1a20abb060473d0469ece960a6f5f119, type: 3}
-  <plantPreviewPrefab>k__BackingField: {fileID: 9128373408457495857, guid: a32327d04908e4d439e174a828bab7ce, type: 3}
+  <plantPreviewPrefab>k__BackingField: {fileID: 5548780806841113117, guid: 3dc3c770d328d7347bca80c175d3901c, type: 3}
