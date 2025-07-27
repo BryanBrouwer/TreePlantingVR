@@ -147,3 +147,4 @@ Known improvement areas are:
 - The lighting setup could use a big improvement.
 - More interesting rules or actions.
 - An actual shop or other method of getting seeds for game design reasons.
+- I originally had some plans to incorporate Localization, but this, however, would have cost much more time than I have available. So I ended up doing English support by default.
