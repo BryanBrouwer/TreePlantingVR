@@ -82,3 +82,32 @@ Score:
 
 The tools to complete the action could utilize an interface to indicate they are tools, and for checking what kind of action it solves.
 Also for this use the tag system for collision layers
+
+
+
+
+--- Progress update:
+- Currently Ive got support for seed types, planting condtions, growth actions
+- Also support for plant instances, growing into new stages, and timeouts with dead.
+- Got all relevant hooks ready for adding UX into the game.
+- Planting conditions still lack actual functional condition checks, 
+	I will add a PlantInstanceManager to keep track of a dictionary per "plantType"
+	This way when looping over for conditions I dont need to do an extra expensive call to get gameobjects with components and still filter on plantType.
+	
+Additionally there is currently a bug with the placeholder watering can that only works when tilting right, probably since the objects forward vector isnt in the direction that is expected.
+
+I also still need simple art assets
+And I need to make a few material instances since I want to implement the material plant condition as well.
+Need to still add a score manager to keep track of the score, and display it on a UI.
+And still need a system that limits the players session length in any manner.
+Also need a system that provides more seeds to the player.
+
+For now for the idea is a simple table with the different seed types.
+I can make a simple seed giver class, which you link a seed scriptable object to which will then generate the seed objects whenever being picked up
+Additionally will add another component to the seed that tracks if its still being held, other destroy it after X seconds, to avoid players grabbing infinite seeds and increase object count.
+
+PlantInstanceManager and for ScoreManager I am thinking of utlizing singletons for easier access and management.
+
+For limiting the session length I will likely just add a timer of 10 minutes per session. When done play a sound effect to get the players attention back to the stand and showcase the final score. 
+With a button to try again. This way you dont confuse the player with random teleports or unexpected UI popups.
+But I might need to look into more guidance back to the board.
