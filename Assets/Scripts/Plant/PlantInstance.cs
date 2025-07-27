@@ -16,43 +16,13 @@ namespace Plant
         private LifeState _currentLifeState;
         private GameObject _plantPrefabInstance;
         
-        private readonly Dictionary<GrowthAction, float> _growthActionProgressDictionary = new Dictionary<GrowthAction, float>();
-        private readonly Dictionary<(GrowthAction action, GameObject tool), Coroutine> _activeCoroutines = new Dictionary<(GrowthAction action, GameObject tool), Coroutine>();
+        private readonly List<GrowthActionRuntime> _activeGrowthActions = new List<GrowthActionRuntime>();
+        private readonly Dictionary<(GrowthActionRuntime action, GameObject tool), Coroutine> _activeCoroutines = new Dictionary<(GrowthActionRuntime action, GameObject tool), Coroutine>();
         private readonly List<IPlantTool> _overlappingTools = new List<IPlantTool>();
         
-        private readonly Dictionary<GrowthAction, Coroutine> _actionTimeoutCoroutines = new Dictionary<GrowthAction, Coroutine>();
-
-        private IEnumerator ActionTimeout(GrowthAction action)
+        private IEnumerator ProgressGrowthAction(GrowthActionRuntime actionRuntime, IPlantTool tool)
         {
-            float remainingTime = action.timeToComplete;
-            float interval = action.timeToComplete / 3f;
-            int currentInterval = 0;
-
-            while (remainingTime > 0f)
-            {
-                yield return null;
-                remainingTime -= Time.deltaTime;
-                
-                int newInterval = Mathf.FloorToInt((action.timeToComplete - remainingTime) / interval);
-                if (newInterval != currentInterval)
-                {
-                    currentInterval = newInterval;
-                    // TODO: Trigger UI update to reflect background interval change
-                    Debug.Log("Current interval changed");
-                }
-            }
-
-            // If the action is still active after timeout, plant dies
-            if (_growthActionProgressDictionary.ContainsKey(action))
-            {
-                TransitionToState(LifeState.Dead);
-            }
-            _actionTimeoutCoroutines.Remove(action);
-        }
-        
-        private IEnumerator ProgressGrowthAction(GrowthAction action, IPlantTool tool)
-        {
-            while (_growthActionProgressDictionary.ContainsKey(action))
+            while (_activeGrowthActions.Contains(actionRuntime))
             {
                 if (!tool.isToolActive)
                 {
@@ -61,13 +31,13 @@ namespace Plant
                     continue;
                 }
 
-                _growthActionProgressDictionary[action] += tool.completionRatePerSecond * Time.deltaTime;
+                actionRuntime.AddProgress(tool.completionRatePerSecond * Time.deltaTime);;
 
                 // Check if progress is complete
-                if (_growthActionProgressDictionary[action] >= action.progressTarget)
+                if (actionRuntime.IsComplete())
                 {
-                    SetGrowthActionCompleted(action);
-                    _activeCoroutines.Remove((action, (tool as Component)?.gameObject));
+                    SetGrowthActionCompleted(actionRuntime);
+                    _activeCoroutines.Remove((actionRuntime, (tool as Component)?.gameObject));
                     yield break;
                 }
 
@@ -75,23 +45,20 @@ namespace Plant
             }
         }
         
-        private void SetGrowthActionCompleted(GrowthAction action)
+        private void SetGrowthActionCompleted(GrowthActionRuntime actionRuntime)
         {
-            if (!_growthActionProgressDictionary.Remove(action))
+            if (!_activeGrowthActions.Contains(actionRuntime))
                 return;
             
-            // Stop the dying timeout coroutine
-            if (_actionTimeoutCoroutines.TryGetValue(action, out Coroutine timeout))
-            {
-                StopCoroutine(timeout);
-                _actionTimeoutCoroutines.Remove(action);
-            }
+            actionRuntime.StopTimeout();
+            actionRuntime.OnTimeout -= OnActionTimeout;
+            _activeGrowthActions.Remove(actionRuntime);
             
             // Stop all coroutines associated with this action
-            var keysToRemove = new List<(GrowthAction, GameObject)>();
+            var keysToRemove = new List<(GrowthActionRuntime, GameObject)>();
             foreach (var kvp in _activeCoroutines)
             {
-                if (kvp.Key.action != action) 
+                if (kvp.Key.action != actionRuntime) 
                     continue;
                 StopCoroutine(kvp.Value);
                 keysToRemove.Add(kvp.Key);
@@ -100,7 +67,7 @@ namespace Plant
                 _activeCoroutines.Remove(key);
             
             // Check if all actions are completed, this way we can efficiently transition to the next state following an observer pattern instead of relying on update ticks.
-            if (_growthActionProgressDictionary.Count == 0)
+            if (_activeGrowthActions.Count == 0)
                 TransitionToState(seedData.GetLifeStateConfig(_currentLifeState).nextLifeState);
         }
         
@@ -114,48 +81,58 @@ namespace Plant
                 return;
             
             // Setting up new growth actions and delegate subscriptions.
-            _growthActionProgressDictionary.Clear();
             foreach (var growthAction in seedData.GetLifeStateConfig(lifeState).growthActions)
             {
                 growthAction.SetupAction(this);
-                _growthActionProgressDictionary.Add(growthAction, 0);
-                // Start a coroutine per action to handle the dying timeout of the plant
-                Coroutine timeout = StartCoroutine(ActionTimeout(growthAction));
-                _actionTimeoutCoroutines[growthAction] = timeout;
+                GrowthActionRuntime newActionRuntime = new GrowthActionRuntime(this, growthAction);
+                newActionRuntime.OnTimeout += OnActionTimeout;
+                newActionRuntime.StartTimeout();
+                _activeGrowthActions.Add(newActionRuntime);
             }
         }
-
+        
+        private void OnActionTimeout(GrowthActionRuntime actionRuntime)
+        {
+            TransitionToState(LifeState.Dead);
+        }
+        
         public void TransitionToState(LifeState lifeState)
         {
             if (_currentLifeState == lifeState)
                 return;
+            
+            foreach (var runtime in _activeGrowthActions)
+            {
+                runtime.StopTimeout();
+                runtime.OnTimeout -= OnActionTimeout;
+            }
+            _activeGrowthActions.Clear();
 
             if (_plantPrefabInstance)
                 Destroy(_plantPrefabInstance);
 
             SetupState(lifeState);
-
             RecheckOverlaps();
         }
 
         private void HandleToolInteraction(IPlantTool tool, GameObject toolObject)
         {
-            foreach (var growthAction in _growthActionProgressDictionary.Keys.ToList())
+            foreach (var actionRuntime in _activeGrowthActions.ToList())
             {
-                if (growthAction.toolType != tool.toolType)
+                if (actionRuntime.growthAction.toolType != tool.toolType)
                     continue;
 
-                if (growthAction.isInstantCompletion)
+                if (actionRuntime.growthAction.isInstantCompletion)
                 {
-                    SetGrowthActionCompleted(growthAction);
+                    SetGrowthActionCompleted(actionRuntime);
                 }
                 else
                 {
-                    var key = (growthAction, toolObject);
+                    var key = (actionRuntime, toolObject);
                     if (_activeCoroutines.ContainsKey(key))
                         continue;
 
-                    Coroutine routine = StartCoroutine(ProgressGrowthAction(growthAction, tool));
+                    Coroutine routine = StartCoroutine(ProgressGrowthAction(actionRuntime, tool));
                     _activeCoroutines[key] = routine;
                 }
             }
@@ -198,7 +175,7 @@ namespace Plant
                 _overlappingTools.Remove(plantTool);
 
             // Stop all coroutines associated with this tool
-            var keysToRemove = new List<(GrowthAction, GameObject)>();
+            var keysToRemove = new List<(GrowthActionRuntime, GameObject)>();
             foreach (var kvp in _activeCoroutines)
             {
                 if (kvp.Key.tool != other.gameObject) 
@@ -208,14 +185,6 @@ namespace Plant
             }
             foreach (var key in keysToRemove)
                 _activeCoroutines.Remove(key);
-        }
-
-        private void Start()
-        {
-            if (!seedData)
-                return;
-            
-            SetupState(LifeState.Seed);
         }
 
         private void OnDisable()
