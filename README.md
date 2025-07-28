@@ -33,3 +33,5 @@ Water droplet png
 
 Trowel PNG
 <a href='https://pngtree.com/freepng/garden-hoe_20426061.html'>png image from pngtree.com/</a>
+
+Unity's VR Template was used as a template for the project.
